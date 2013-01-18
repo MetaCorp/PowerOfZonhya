@@ -14,7 +14,7 @@ namespace Projet3
 {
     class SpriteAnime
     {
-        List<Animation> animations = new List<Animation>();
+        List<AnimationSprite> animations = new List<AnimationSprite>();
 
         int currentAnimation;
 
@@ -37,7 +37,7 @@ namespace Projet3
 
         public void AddAnimation(List<Rectangle> rectangles)
         {
-            animations.Add(new Animation());
+            animations.Add(new AnimationSprite());
 
             foreach (Rectangle rectangle in rectangles)
                 animations[animations.Count - 1].AddRectangle(rectangle);

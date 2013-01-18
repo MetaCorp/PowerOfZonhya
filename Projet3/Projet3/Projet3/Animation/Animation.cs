@@ -13,26 +13,62 @@ namespace Projet3
 {
     class Animation
     {
-        public List<Rectangle> rectangles = new List<Rectangle>();
+        Texture2D texture;
+        SpriteFont font;
 
-        public Rectangle currentRectangle;
+        Vector2 position;
+        Vector2 deplacement;
+        float vitesse;
 
-        public int currentImage;
+        int width;
+        int height;
+
+        public bool isFinished;
+        public bool isActive;
 
         public Animation()
         {
+            isFinished = true;
+
+            isActive = false;
+
+            deplacement = new Vector2(-1, 0);
+
+            width = Constante.WindowWidth;
+            height = 200;
+            vitesse = 3;
         }
 
-        public void AddRectangle(Rectangle rectangleSource)
+        public void LoadTexture(Texture2D texture, SpriteFont font)
         {
-            rectangles.Add(rectangleSource);
-            currentRectangle = rectangles[0];
+            this.texture = texture;
+            this.font = font;
+
         }
 
-        public void Update(GameTime gameTime)
+        public void Update()
         {
-            currentImage = (currentImage + 1) % rectangles.Count;
-            currentRectangle = rectangles[currentImage];
+            vitesse = (float)Math.Pow(position.X, 2) / 1500 + 0.4f;
+            position += deplacement * vitesse;
+
+            if (isFinished)
+                isActive = false;
+
+            if (position.X + Constante.WindowWidth < 0)
+                isFinished = true;
+        }
+
+        public void Lancer()
+        {
+            isActive = true;
+            isFinished = false;
+            position = new Vector2(Constante.WindowWidth, Constante.WindowHeight / 2 - height/2);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, width, height), Color.White);
+            spriteBatch.DrawString(font, "VS", position + new Vector2(Constante.WindowWidth/2 - 5, height/2 - 5), Color.White);
         }
     }
 }

@@ -108,13 +108,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\Animation.cs" />
+    <Compile Include="Animation\AnimationSprite.cs" />
+    <Compile Include="ColorManager.cs" />
     <Compile Include="EvenementUtilisateur.cs" />
     <Compile Include="HUD.cs" />
     <Compile Include="Menu\Bouton.cs" />
     <Compile Include="Carte\Carte.cs" />
     <Compile Include="Constante.cs" />
     <Compile Include="Menu\Menu.cs" />
-    <Compile Include="Monstre.cs" />
+    <Compile Include="Entity\Monstre.cs" />
     <Compile Include="Moteurs\MoteurParticule\MoteurParticule.cs" />
     <Compile Include="Moteurs\MoteurAudio.cs" />
     <Compile Include="Moteurs\MoteurGraphique.cs" />

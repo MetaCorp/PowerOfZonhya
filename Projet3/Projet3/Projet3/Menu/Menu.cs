@@ -92,7 +92,11 @@ namespace Projet3
                 if (i == boutons.Count)
                     return -1;
                 else
+                {
+
+                    MoteurAudio.PlaySound("Click");
                     return i;
+                }
 
             }
             else

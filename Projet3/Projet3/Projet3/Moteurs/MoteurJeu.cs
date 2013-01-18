@@ -15,7 +15,7 @@ namespace Projet3
     {
         MenuAccueil,
         EnJeu,
-        MenuJeu,
+        EnCombat,
         Quitter
     }
 
@@ -42,6 +42,7 @@ namespace Projet3
 
     class MoteurJeu
     {
+        #region Déclaration des variables
         public Carte carte;
         public Personnage personnage;
         public List<Monstre> monstres = new List<Monstre>();
@@ -62,11 +63,15 @@ namespace Projet3
 
         public HUD hud;
 
+        public List<Animation> animations = new List<Animation>();
+
         MoteurSysteme moteurSysteme;
         MoteurPhysique moteurPhysique;
 
         public EvenementUtilisateur evenementUtilisateur;
-            
+
+        #endregion
+
         public MoteurJeu(MoteurSysteme moteurSysteme, MoteurPhysique moteurPhysique)
         {
             statusJeu = Status.MenuAccueil;
@@ -106,6 +111,8 @@ namespace Projet3
             monstres.Add(new Monstre(MonstreType.brasegali, new Vector2(20, 20)));
 
             hud = new HUD(personnage);
+
+            animations.Add(new Animation());
         }
 
         public void Update(GameTime gameTime)
@@ -114,8 +121,27 @@ namespace Projet3
 
             if (statusJeu == Status.EnJeu)
                 UpdateJeu(gameTime);
+            else if (statusJeu == Status.EnCombat)
+                UpdateCombat(gameTime);
             else if (statusJeu == Status.MenuAccueil)
                 UpdateMenu();
+        }
+
+        public void UpdateCombat(GameTime gameTime)
+        {
+            personnage.isAggro = false;
+            personnage.experience += 300;
+
+            for (int i = 0; i < monstres.Count; i++)
+            {
+                if (monstres[i].isAggro)
+                {
+                    monstres.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            statusJeu = Status.EnJeu;
         }
 
         public void UpdateJeu(GameTime gameTime)
@@ -163,7 +189,7 @@ namespace Projet3
                 menuPauseSaison.SetSelectedItem((int)saison);
 
             }
-            else if (menuPausePrincipal.isActive)
+            else if (menuPausePrincipal.isActive) // Pause
             {
                 int action = menuPausePrincipal.Update(evenementUtilisateur.mouseState);
 
@@ -180,8 +206,33 @@ namespace Projet3
                     statusJeu = Status.MenuAccueil;
                 }
             }
-            else
+            else // en jeu
             {
+
+                foreach (Monstre monstre in monstres)
+                    if (monstre.IsAggro(personnage.positionTile))
+                    {
+                        if (!personnage.isAggro)
+                        {
+                            monstre.Aggro();
+                            monstre.Bouger(personnage.positionTile, moteurPhysique);
+                            personnage.Aggro(monstre.positionTile);
+                        }
+
+                        if (monstre.positionTile == personnage.positionTile)
+                        {
+                            if (!animations[0].isActive)
+                                animations[0].Lancer();
+
+                            if (animations[0].isFinished)
+                            {
+                                personnage.isAggro = false;
+                                statusJeu = Status.EnCombat;
+                            }
+                        }
+                    }
+
+
                 if (evenementUtilisateur.mouseState.RightButton == ButtonState.Pressed)
                     personnage.Bouger(carte.tuileHover, moteurPhysique);
 
@@ -194,6 +245,10 @@ namespace Projet3
                 hud.Update();
 
                 UpdateCamera();
+
+                foreach (Animation animation in animations)
+                    if (!animation.isFinished)
+                        animation.Update();
             }
         }
 

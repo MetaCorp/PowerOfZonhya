@@ -13,45 +13,63 @@ namespace Projet3
 {
     class MoteurAudio
     {
+        MoteurJeu moteurJeu;
+
         SoundEffect sonBouton;
         static SoundEffectInstance sonBoutonInstance;
 
-        static Song mainSong;
-        static Song menuSong;
+        SoundEffect sonAggro;
+        static SoundEffectInstance sonAggroInstance;
 
-        static String songPlaying;
+        Song songPlaying;
 
-        public MoteurAudio()
+        Song mainSong;
+        Song menuSong;
+
+        public MoteurAudio(MoteurJeu moteurJeu)
         {
-            songPlaying = "";
+            this.moteurJeu = moteurJeu;
+
+            MediaPlayer.IsRepeating = true;
         }
 
         public void LoadContent(ContentManager content)
         {
-            sonBouton = content.Load<SoundEffect>("Pioche");
+            sonBouton = content.Load<SoundEffect>("Audio/Pioche");
             sonBoutonInstance = sonBouton.CreateInstance();
 
-            mainSong = content.Load<Song>("18-Theme of Sorrow");
-            menuSong = content.Load<Song>("06-Troia");
+            sonAggro = content.Load<SoundEffect>("Audio/WHOOSH");
+            sonAggroInstance = sonAggro.CreateInstance();
+
+            mainSong = content.Load<Song>("Audio/18-Theme of Sorrow");
+            menuSong = content.Load<Song>("Audio/06-Troia");
+        }
+
+        public void Update()
+        {
+            if (moteurJeu.statusJeu == Status.EnJeu && songPlaying != mainSong)
+            {
+                MediaPlayer.Play(mainSong);
+                songPlaying = mainSong;
+            }
+            else if (moteurJeu.statusJeu == Status.MenuAccueil && songPlaying != menuSong)
+            {
+                MediaPlayer.Play(menuSong);
+                songPlaying = menuSong;
+            }
         }
 
         public static void PlaySound(String sound)
         {
             if (sound == "Click")
-                sonBoutonInstance.Volume = 0.3f;
-            sonBoutonInstance.Play();
-        }
-
-        public static void PlaySong(String song)
-        {
-            MediaPlayer.Volume = 0.5f;
-            if (songPlaying != song)
             {
-                if (song == "Main")
-                    MediaPlayer.Play(mainSong);
-                else if (song == "Menu")
-                    MediaPlayer.Play(menuSong);
-                songPlaying = song;
+                sonBoutonInstance.Volume = 0.3f;
+                sonBoutonInstance.Play();
+            }
+            else if (sound == "Aggro")
+            {
+                sonAggroInstance.Volume = 0.2f;
+                sonAggroInstance.Play();
             }
         }
 

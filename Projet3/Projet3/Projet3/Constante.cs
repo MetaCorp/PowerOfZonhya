@@ -16,6 +16,9 @@ namespace Projet3
         public static int WindowWidth = 950;
         public static int WindowHeight = 600;
 
+        public static int TotalWidth = 40;
+        public static int TotalHeight = 40;
+
         public static int StepX = 32;
         public static int StepY = 16;
 

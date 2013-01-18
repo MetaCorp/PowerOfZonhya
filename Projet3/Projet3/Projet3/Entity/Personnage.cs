@@ -27,7 +27,7 @@ namespace Projet3
 
         bool revert;// flip
         bool isMoving;
-        bool isAggro;
+        public bool isAggro;
         
         // Variable pour le déplacement
         Vector2 deplacement;

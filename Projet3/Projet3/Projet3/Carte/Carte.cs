@@ -107,8 +107,8 @@ namespace Projet3
             tuileHoverAux.X = (((positionSouris.Y - camera.Y) / 32 + (positionSouris.X - 32 - camera.X) / 64) / 2) * 2;
             tuileHoverAux.Y = (((positionSouris.Y - camera.Y) / 32 - (positionSouris.X - 32 - camera.X) / 64) / 2) * 2;
 
-
-            tuileHover = tuileHoverAux - Vector2.One;
+            if (tuileHoverAux.X > 1 && tuileHoverAux.Y > 1)
+                tuileHover = tuileHoverAux - Vector2.One;
         }
 
         public void Draw(SpriteBatch spriteBatch)

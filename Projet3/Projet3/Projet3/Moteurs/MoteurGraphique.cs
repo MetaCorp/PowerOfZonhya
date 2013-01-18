@@ -13,6 +13,7 @@ namespace Projet3
 {
     class MoteurGraphique
     {
+        #region Déclaration des variables
         MoteurJeu moteurJeu;
 
         Texture2D textureCarte;
@@ -20,6 +21,8 @@ namespace Projet3
         Texture2D textureBrasegaliVignette;
         Texture2D textureRondoudou;
         Texture2D textureTileHover;
+
+        Texture2D textureAnimationLancerCombat;
 
         Texture2D textureMenu;
         Texture2D textureMenuFond;
@@ -38,6 +41,7 @@ namespace Projet3
         List<Texture2D> textureParticuleMenuSouris = new List<Texture2D>();
         List<Texture2D> textureParticulePluie = new List<Texture2D>();
         List<Texture2D> textureParticuleNeige = new List<Texture2D>();
+        #endregion
 
         public MoteurGraphique(MoteurJeu moteurJeu)
         {
@@ -56,6 +60,8 @@ namespace Projet3
             textureMenu = content.Load<Texture2D>("Images/GUI/Menu/rpg_gui_v1");
             textureMenuFond = content.Load<Texture2D>("Images/997973hdhsfuc");
 
+            textureAnimationLancerCombat = content.Load<Texture2D>("menubouton");
+
             fontPersonnage = content.Load<SpriteFont>("font/fontPersonnage");
             fontMonstre = content.Load<SpriteFont>("font/fontMonstre");
             fontMenu = content.Load<SpriteFont>("font/fontMenu");
@@ -63,6 +69,8 @@ namespace Projet3
 
             moteurJeu.carte.LoadTexture(textureCarte, textureTileHover);
             moteurJeu.personnage.LoadTexture(textureBrasegali, fontPersonnage);
+
+            moteurJeu.animations[0].LoadTexture(textureAnimationLancerCombat, fontMenu);
 
             foreach (Monstre monstre in moteurJeu.monstres)
             {
@@ -136,6 +144,10 @@ namespace Projet3
                 moteurJeu.personnage.Draw(spriteBatch);
 
                 moteurJeu.hud.Draw(spriteBatch);
+
+                foreach (Animation animation in moteurJeu.animations)
+                    if (!animation.isFinished)
+                        animation.Draw(spriteBatch);
 
                 if (moteurJeu.menuPauseMeteo.isActive && moteurJeu.menuPauseSaison.isActive)
                 {

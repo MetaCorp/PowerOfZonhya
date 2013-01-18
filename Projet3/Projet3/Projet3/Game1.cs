@@ -39,8 +39,8 @@ namespace Projet3
         {
             moteurSysteme = new MoteurSysteme();
             moteurPhysique = new MoteurPhysique();
-            moteurAudio = new MoteurAudio();
             moteurJeu = new MoteurJeu(moteurSysteme, moteurPhysique);
+            moteurAudio = new MoteurAudio(moteurJeu);
             moteurGraphique = new MoteurGraphique(moteurJeu);
 
             base.Initialize();
@@ -51,7 +51,7 @@ namespace Projet3
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             moteurGraphique.LoadContent(Content);
-            //moteurAudio.LoadContent(Content);
+            moteurAudio.LoadContent(Content);
         }
 
         protected override void UnloadContent() { }
@@ -66,6 +66,7 @@ namespace Projet3
 
             moteurJeu.Update(gameTime);
             moteurGraphique.UpdateParticule();
+            moteurAudio.Update();
 
             base.Update(gameTime);
         }
