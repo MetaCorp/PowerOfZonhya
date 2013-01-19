@@ -76,6 +76,10 @@ namespace Projet3
                                 rectangleSource = new Rectangle(6 * tileWidth, 6 * tileHeight, tileWidth, tileHeight);
                                 break;
 
+                            case '/':
+                                rectangleSource = new Rectangle(4 * tileWidth, 2 * tileHeight, tileWidth, tileHeight);
+                                break;
+
                             default: //('a')
                                 rectangleSource = new Rectangle(0 * tileWidth, 0 * tileHeight, tileWidth, tileHeight);
                                 break;

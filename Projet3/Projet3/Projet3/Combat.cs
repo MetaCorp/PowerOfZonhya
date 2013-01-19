@@ -31,6 +31,8 @@ namespace Projet3
 
         Vector2 camera;
 
+        Vector2 positionPersonnageMap;
+
         public Combat(MoteurPhysique moteurPhysique, EvenementUtilisateur evenementUtilisateur)
         {
             this.moteurPhysique = moteurPhysique;
@@ -50,6 +52,12 @@ namespace Projet3
             this.joueur = joueur;
             this.ennemi = ennemi;
 
+            positionPersonnageMap = joueur.positionTile;
+
+            joueur.positionTile = new Vector2(8, 8);
+
+            ennemi.positionTile = new Vector2(12, 4);
+
             isActive = true;
 
             string[,] stringCarte = GenererCarte();
@@ -64,19 +72,29 @@ namespace Projet3
 
             for (int x = 0; x < 15; x++)
                 for (int y = 0; y < 15; y++)
-                    stringCarte[y, x] = "c";
+                    stringCarte[y, x] = "c/";
 
             return stringCarte;
         }
 
         public void Update(GameTime gameTime)
         {
+            if (evenementUtilisateur.mouseState.RightButton == ButtonState.Pressed)
+                joueur.positionTile = new Vector2((int)carte.tuileHover.X, (int)carte.tuileHover.Y);
+
+            Console.WriteLine("positionJoueur : " + joueur.positionTile);
+            Console.WriteLine("tileHover : " + carte.tuileHover);
+
             carte.Update(gameTime, camera, evenementUtilisateur.mouseState);
+            joueur.Update(gameTime, camera);
+            ennemi.Update(gameTime, camera, moteurPhysique);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             carte.Draw(spriteBatch);
+            ennemi.Draw(spriteBatch);
+            joueur.Draw(spriteBatch);
         }
     }
 }

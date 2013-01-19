@@ -54,9 +54,6 @@ namespace Projet3
         {
             MediaPlayer.Volume = (float)songVolume/100;
 
-            Console.WriteLine("static : " + songVolume);
-            Console.WriteLine(MediaPlayer.Volume);
-
             if (moteurJeu.statusJeu == Status.EnJeu && songPlaying != mainSong)
             {
                 MediaPlayer.Play(mainSong);
