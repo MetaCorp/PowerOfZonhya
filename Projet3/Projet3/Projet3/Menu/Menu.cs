@@ -50,6 +50,11 @@ namespace Projet3
                 bouton.LoadTexture(texture, textureFont);
         }
 
+        public void ChangeTitle(int bouton, string titre)
+        {
+            boutons[bouton].ChangeTitle(titre);
+        }
+
         private void InitBoutons(String[] items)
         {
             for (int i = 0; i < items.Length; i++)

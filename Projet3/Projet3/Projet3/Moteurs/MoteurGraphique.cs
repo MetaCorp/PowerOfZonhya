@@ -86,9 +86,12 @@ namespace Projet3
 
             moteurJeu.menuAccueilPrincipal.LoadTexture(textureMenu, fontMenu);
             moteurJeu.menuAccueilReglage.LoadTexture(textureMenu, fontMenu);
+            moteurJeu.menuAccueilAudio.LoadTexture(textureMenu, fontMenu);
             moteurJeu.menuAccueuilFond.LoadTexture(textureMenuFond);
 
             moteurJeu.hud.LoadTexture(textureMenu, textureBrasegaliVignette, fontHUD);
+
+            moteurJeu.combat.LoadTexture(textureCarte, textureTileHover, fontMenu);
 
             LoadParticule(content);
         }
@@ -165,6 +168,13 @@ namespace Projet3
                     moteurJeu.menuAccueilPrincipal.Draw(spriteBatch);
                 else if (moteurJeu.menuAccueilReglage.isActive)
                     moteurJeu.menuAccueilReglage.Draw(spriteBatch);
+                else if (moteurJeu.menuAccueilAudio.isActive)
+                    moteurJeu.menuAccueilAudio.Draw(spriteBatch);
+            }
+            else if (moteurJeu.statusJeu == Status.EnCombat)
+            {
+                moteurJeu.combat.Draw(spriteBatch);
+
             }
         }
 

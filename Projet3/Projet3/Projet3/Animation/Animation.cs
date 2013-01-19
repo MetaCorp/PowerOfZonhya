@@ -60,6 +60,7 @@ namespace Projet3
 
         public void Lancer()
         {
+            Console.WriteLine("ANIMATION");
             isActive = true;
             isFinished = false;
             position = new Vector2(Constante.WindowWidth, Constante.WindowHeight / 2 - height/2);
@@ -68,7 +69,7 @@ namespace Projet3
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, width, height), Color.White);
-            spriteBatch.DrawString(font, "VS", position + new Vector2(Constante.WindowWidth/2 - 5, height/2 - 5), Color.White);
+            spriteBatch.DrawString(font, "VS.", position + new Vector2(Constante.WindowWidth/2 - 5, height/2 - 5), Color.White);
         }
     }
 }

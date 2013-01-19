@@ -40,6 +40,11 @@ namespace Projet3
             sourceRectSelec = new Rectangle(3, 69, 70, 14);
         }
 
+        public void ChangeTitle(string titre)
+        {
+            this.titre = titre;
+        }
+
         public void LoadTexture(Texture2D texture, SpriteFont font)
         {
             this.texture = texture;

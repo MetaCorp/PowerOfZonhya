@@ -15,6 +15,9 @@ namespace Projet3
     {
         MoteurJeu moteurJeu;
 
+        public static int songVolume;
+        public static int soundVolume;
+
         SoundEffect sonBouton;
         static SoundEffectInstance sonBoutonInstance;
 
@@ -31,6 +34,8 @@ namespace Projet3
             this.moteurJeu = moteurJeu;
 
             MediaPlayer.IsRepeating = true;
+            songVolume = 100;
+            soundVolume = 100;
         }
 
         public void LoadContent(ContentManager content)
@@ -47,6 +52,11 @@ namespace Projet3
 
         public void Update()
         {
+            MediaPlayer.Volume = (float)songVolume/100;
+
+            Console.WriteLine("static : " + songVolume);
+            Console.WriteLine(MediaPlayer.Volume);
+
             if (moteurJeu.statusJeu == Status.EnJeu && songPlaying != mainSong)
             {
                 MediaPlayer.Play(mainSong);
@@ -63,20 +73,14 @@ namespace Projet3
         {
             if (sound == "Click")
             {
-                sonBoutonInstance.Volume = 0.3f;
+                sonBoutonInstance.Volume = (float)soundVolume / 100;
                 sonBoutonInstance.Play();
             }
             else if (sound == "Aggro")
             {
-                sonAggroInstance.Volume = 0.2f;
+                sonAggroInstance.Volume = (float)soundVolume / 100;
                 sonAggroInstance.Play();
             }
-        }
-
-        public static void StopSong(String song)
-        {
-            if (song == "Main")
-                MediaPlayer.Stop();
         }
     }
 }

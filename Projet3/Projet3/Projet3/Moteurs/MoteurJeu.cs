@@ -48,8 +48,11 @@ namespace Projet3
         public List<Monstre> monstres = new List<Monstre>();
         public Vector2 camera;
 
+        public Combat combat;
+
         public Menu menuAccueilPrincipal;
         public Menu menuAccueilReglage;
+        public Menu menuAccueilAudio;
         public Sprite menuAccueuilFond;
 
         public Menu menuPausePrincipal;
@@ -92,6 +95,9 @@ namespace Projet3
             menuAccueilReglage = new Menu(new Vector2(Constante.WindowWidth / 2 - 100, Constante.WindowHeight / 2 - 120),
                                  new string[4] { "Video", "Audio", "Raccourcis", "Retour" }, 200, 40, 60, true);
 
+            menuAccueilAudio = new Menu(new Vector2(Constante.WindowWidth / 2 - 100, Constante.WindowHeight / 2 - 60 - 30),
+                                 new string[3] { "Musique : ", "Son : ", "Retour" }, 200, 40, 60, true);
+
             menuAccueuilFond = new Sprite(new Rectangle(0, 0, Constante.WindowWidth, Constante.WindowHeight));
             #endregion
 
@@ -113,6 +119,8 @@ namespace Projet3
             hud = new HUD(personnage);
 
             animations.Add(new Animation());
+
+            combat = new Combat(moteurPhysique, evenementUtilisateur);
         }
 
         public void Update(GameTime gameTime)
@@ -129,19 +137,19 @@ namespace Projet3
 
         public void UpdateCombat(GameTime gameTime)
         {
+            combat.Update(gameTime);
+
             personnage.isAggro = false;
             personnage.experience += 300;
 
             for (int i = 0; i < monstres.Count; i++)
-            {
                 if (monstres[i].isAggro)
                 {
                     monstres.RemoveAt(i);
                     i--;
                 }
-            }
 
-            statusJeu = Status.EnJeu;
+            //statusJeu = Status.EnJeu;
         }
 
         public void UpdateJeu(GameTime gameTime)
@@ -157,7 +165,7 @@ namespace Projet3
                     menuPausePrincipal.Activer();
             }
 
-            if (menuPauseMeteo.isActive && menuPauseSaison.isActive)
+            if (menuPauseMeteo.isActive && menuPauseSaison.isActive) // Menu Saison et météo
             {
                 int action1 = menuPauseMeteo.Update(evenementUtilisateur.mouseState);
 
@@ -189,7 +197,7 @@ namespace Projet3
                 menuPauseSaison.SetSelectedItem((int)saison);
 
             }
-            else if (menuPausePrincipal.isActive) // Pause
+            else if (menuPausePrincipal.isActive) // Menu Pause
             {
                 int action = menuPausePrincipal.Update(evenementUtilisateur.mouseState);
 
@@ -227,6 +235,8 @@ namespace Projet3
                             if (animations[0].isFinished)
                             {
                                 personnage.isAggro = false;
+                                animations[0].isActive = false;
+                                combat.LancerCombat(personnage, monstre);
                                 statusJeu = Status.EnCombat;
                             }
                         }
@@ -272,15 +282,37 @@ namespace Projet3
             {
                 int action = menuAccueilReglage.Update(evenementUtilisateur.mouseState);
 
-                if (action != -1)
+                if (action == 3)
                 {
-                    if (action == 3)
-                    {
-                        menuAccueilReglage.Desactiver();
-                        menuAccueilPrincipal.Activer();
-                    }
+                    menuAccueilReglage.Desactiver();
+                    menuAccueilPrincipal.Activer();
                 }
+                else if (action == 1)
+                {
+                    menuAccueilReglage.Desactiver();
+                    menuAccueilAudio.Activer();
+                }
+            }
+            else if (menuAccueilAudio.isActive)
+            {
+                int action = menuAccueilAudio.Update(evenementUtilisateur.mouseState);
 
+                menuAccueilAudio.ChangeTitle(0, "Musique : " + MoteurAudio.songVolume);
+                menuAccueilAudio.ChangeTitle(1, "Son : " + MoteurAudio.soundVolume);
+
+                if (action == 0)
+                {
+                    MoteurAudio.songVolume = (MoteurAudio.songVolume + 1) % 101;
+                }
+                else if (action == 1)
+                {
+                    MoteurAudio.soundVolume = (MoteurAudio.soundVolume + 1) % 101;
+                }
+                else if (action == 2)
+                {
+                    menuAccueilAudio.Desactiver();
+                    menuAccueilReglage.Activer();
+                }
             }
         }
 
