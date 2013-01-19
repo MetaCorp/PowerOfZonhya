@@ -110,9 +110,10 @@
     <Compile Include="Animation\Animation.cs" />
     <Compile Include="Animation\AnimationSprite.cs" />
     <Compile Include="ColorManager.cs" />
-    <Compile Include="Combat.cs" />
+    <Compile Include="Combat\Combat.cs" />
     <Compile Include="EvenementUtilisateur.cs" />
-    <Compile Include="HUD.cs" />
+    <Compile Include="Carte\HUD.cs" />
+    <Compile Include="Combat\HudCombat.cs" />
     <Compile Include="Menu\Bouton.cs" />
     <Compile Include="Carte\Carte.cs" />
     <Compile Include="Constante.cs" />

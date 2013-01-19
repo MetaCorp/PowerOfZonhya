@@ -23,6 +23,7 @@ namespace Projet3
         Texture2D textureTileHover;
 
         Texture2D textureAnimationLancerCombat;
+        Texture2D textureFinCombat;
 
         Texture2D textureMenu;
         Texture2D textureMenuFond;
@@ -67,6 +68,8 @@ namespace Projet3
             fontMenu = content.Load<SpriteFont>("font/fontMenu");
             fontHUD = content.Load<SpriteFont>("font/fontHUD");
 
+            textureFinCombat = content.Load<Texture2D>("Bouton1");
+
             moteurJeu.carte.LoadTexture(textureCarte, textureTileHover);
             moteurJeu.personnage.LoadTexture(textureBrasegali, fontPersonnage);
 
@@ -91,7 +94,7 @@ namespace Projet3
 
             moteurJeu.hud.LoadTexture(textureMenu, textureBrasegaliVignette, fontHUD);
 
-            moteurJeu.combat.LoadTexture(textureCarte, textureTileHover, fontMenu);
+            moteurJeu.combat.LoadTexture(textureCarte, textureTileHover, textureFinCombat, textureMenu, fontMenu);
 
             LoadParticule(content);
         }

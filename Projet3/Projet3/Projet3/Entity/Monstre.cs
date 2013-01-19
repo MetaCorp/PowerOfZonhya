@@ -11,6 +11,12 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Projet3
 {
+    enum MonstreType
+    {
+        brasegali,
+        rondoudou
+    }
+
     class Monstre
     {
         public MonstreType type;
@@ -19,6 +25,9 @@ namespace Projet3
         SpriteFont font;
 
         public Vector2 positionTile;
+        public Vector2 positionTileCombat;
+        public Vector2 positionTileCarte;
+
         Vector2 deplacement;
         int direction;
         float vitesse;
@@ -30,23 +39,33 @@ namespace Projet3
         public bool isAggro;
         bool revert;
         bool isMoving;
+        bool isCombat;
+
+        String message;
+        float timeToSay;
+        float timeElapsedMessage;
 
         List<Vector2> path = new List<Vector2>();
 
-        float timeElapsed;
+        float timeElapsedMove;
         float timeToMove;
 
-        public Monstre(MonstreType type, Vector2 positionTile)
+        float timeToWait;
+
+        public Monstre(MonstreType type, Vector2 position)
         {
             this.type = type;
 
-            this.positionTile = positionTile;
+            positionTileCarte = position;
+            positionTile = positionTileCarte;
 
             vitesse = 0.05f;
 
-            timeElapsed = 0;
+            timeElapsedMove = 0;
             timeToMove = 5;// bouge toutes les 5 secondes
             direction = 2;
+
+            timeToSay = 3;
 
             isAggro = false;
         }
@@ -55,6 +74,8 @@ namespace Projet3
         {
             this.texture = texture;
             this.font = font;
+
+            message = "";
 
             spriteAnime = new SpriteAnime(texture, 0.1f);
 
@@ -91,11 +112,30 @@ namespace Projet3
 
         public void Update(GameTime gameTime, Vector2 camera, MoteurPhysique moteurPhysique)
         {
-            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (isCombat)
+                positionTile = positionTileCombat;
+            else
+                positionTile = positionTileCarte;
 
-            if (timeElapsed > timeToMove)
+            timeElapsedMove += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timeToWait > 0)
+                timeToWait -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (message != "")
+                timeElapsedMessage += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timeElapsedMessage > timeToSay)
             {
-                timeElapsed -= timeToMove + Constante.Random.Next(-3, 3);
+                timeElapsedMessage = 0;
+                message = "";
+            }
+
+
+
+            if (timeElapsedMove > timeToMove)
+            {
+                timeElapsedMove -= timeToMove + Constante.Random.Next(-3, 3);
 
                 if (!isAggro)
                     BougerRnd(moteurPhysique);
@@ -134,6 +174,17 @@ namespace Projet3
             spriteAnime.IsAnimate(isMoving);
             spriteAnime.Update(gameTime, Constante.ConvertToIso(positionTile) + new Vector2(16, 20) + camera);
 
+            if (isCombat)
+                positionTileCombat = positionTile;
+            else
+                positionTileCarte = positionTile;
+        }
+
+        public void Combat(Vector2 position)
+        {
+            isCombat = true;
+            positionTileCombat = position;
+            path.Clear();
         }
 
         public void BougerRnd(MoteurPhysique moteurPhysique)
@@ -165,16 +216,30 @@ namespace Projet3
             else if (direction == 7 && positionJoueur.X == positionTile.X && (positionJoueur.Y - positionTile.Y >= -3 && positionJoueur.Y - positionTile.Y <= 0))
                 return true;
 
+            else if (direction == 2 && (positionJoueur.X - positionTile.X <= 3 && positionJoueur.X - positionTile.X >= 0) &&
+                                       (positionJoueur.Y - positionTile.Y <= 3 && positionJoueur.Y - positionTile.Y >= 0) &&
+                                       (positionTile.X - positionTile.Y == positionJoueur.X - positionJoueur.Y))
+                return true;
+
             return false;
         }
 
-        public void Aggro()
+        public void Aggro(Vector2 positionJoueur, MoteurPhysique moteurPhysique)
         {
             if (!isAggro)
             {
+                timeToWait = 1;
                 MoteurAudio.PlaySound("Aggro");
                 isAggro = true;
             }
+
+            if (timeToWait <= 0)
+                Bouger(positionJoueur, moteurPhysique);
+        }
+
+        public void Dire(String message)
+        {
+            this.message = message;
         }
 
         public void SetDeplacement()
@@ -256,9 +321,11 @@ namespace Projet3
         {
             spriteAnime.Draw(spriteBatch, revert);
 
-
-            if (isAggro)
-                spriteBatch.DrawString(font, "!!", Constante.ConvertToIso(positionTile) + camera + new Vector2(23, 10), Color.White);
+            if (message != "")
+            {
+                spriteBatch.DrawString(font, message, Constante.ConvertToIso(positionTile) + camera + new Vector2(23, 10), Color.Black);
+                //reste a afficher la bulle
+            }
         }
     }
 }

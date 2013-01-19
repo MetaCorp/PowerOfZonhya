@@ -40,11 +40,12 @@ namespace Projet3
                 return true;
             else
                 return false;
-
         }
 
         public List<Vector2> GetPath(Vector2 positionDepart, Vector2 positionFinale)
         {
+            Console.WriteLine(collisionCarte.Length);
+
             positionFinale.X = (int)positionFinale.X;
             positionFinale.Y = (int)positionFinale.Y;
 

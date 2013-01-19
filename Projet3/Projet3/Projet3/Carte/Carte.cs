@@ -31,6 +31,8 @@ namespace Projet3
         int tileStepX;
         int tileStepY;
 
+        string[,] charArray;
+
         public Carte(MoteurPhysique moteurPhysique, string[,] charArray, Vector2 camera, int tileWidth, int tileHeight, int tileStepX, int tileStepY)
         {
             this.moteurPhysique = moteurPhysique;
@@ -43,9 +45,16 @@ namespace Projet3
 
             InitTileArray(charArray);
 
+            this.charArray = charArray;
+
             moteurPhysique.SetCarte(tuileArray, charArray.GetLength(0), charArray.GetLength(1));
             
             tuileHover = new Vector2(10, 10);
+        }
+
+        public void SetCarte()
+        {
+            moteurPhysique.SetCarte(tuileArray, charArray.GetLength(0), charArray.GetLength(1));
         }
 
         private void InitTileArray(string[,] charArray)

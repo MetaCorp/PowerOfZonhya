@@ -19,14 +19,22 @@ namespace Projet3
 
         public String nom;
 
+        String message;
+        float timeToSay; 
+        float timeElapsedMessage;
+
+
         // Variable pour l'affichage
         Texture2D texture;
         SpriteFont font;
 
         public Vector2 positionTile;
+        public Vector2 positionTileCarte;
+        public Vector2 positionTileCombat;
 
         bool revert;// flip
         bool isMoving;
+        bool isCombat;
         public bool isAggro;
         
         // Variable pour le déplacement
@@ -42,9 +50,14 @@ namespace Projet3
         public Personnage(String nom, Vector2 position)
         {
             this.nom = nom;
-            positionTile = position;
+            positionTileCarte = position;
+            positionTile = positionTileCarte;
             vitesse = 0.05f;
             isAggro = false;
+
+            timeToSay = 3;
+
+            message = "";
 
             vieMax = 200;
             vie = 200;
@@ -94,7 +107,23 @@ namespace Projet3
 
         public void Update(GameTime gameTime, Vector2 camera)
         {
+            if (isCombat)
+                positionTile = positionTileCombat;
+            else
+                positionTile = positionTileCarte;
+
             this.camera = camera;
+
+            // Gere les messages
+            if (message != "")
+                timeElapsedMessage += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timeElapsedMessage > timeToSay)
+            {
+                timeElapsedMessage = 0;
+                message = "";
+            }
+
 
             if (path.Count > 0)
             {
@@ -126,6 +155,25 @@ namespace Projet3
 
             spriteAnime.IsAnimate(isMoving);
             spriteAnime.Update(gameTime, Constante.ConvertToIso(positionTile) + new Vector2(16, 20) + camera);
+
+            if (isCombat)
+                positionTileCombat = positionTile;
+            else
+                positionTileCarte = positionTile;
+        }
+
+        public void Combat(Vector2 position)
+        {
+            isCombat = true;
+            positionTileCombat = position;
+        }
+
+        public void FinCombat(int exp)
+        {
+            isAggro = false;
+            isCombat = false;
+            path.Clear();
+            experience += exp;
         }
 
         public void SetDeplacement()
@@ -220,10 +268,21 @@ namespace Projet3
 
         }
 
+        public void Dire(String message)
+        {
+            this.message = message;
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteAnime.Draw(spriteBatch, revert);
             spriteBatch.DrawString(font, nom, Constante.ConvertToIso(positionTile) + camera + new Vector2(14, 0), Color.White);
+
+            if (message != "")
+            {
+                spriteBatch.DrawString(font, message, Constante.ConvertToIso(positionTile) + camera + new Vector2(0, -15), Color.Black);
+                //reste a afficher la bulle
+            }
         }
 
     }

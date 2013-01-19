@@ -51,7 +51,7 @@ namespace Projet3
             this.font = font;
         }
 
-        private bool IsHover(Vector2 positionSouris)
+        public bool IsHover(Vector2 positionSouris)
         {
             return ((positionSouris.X > rectangle.X && positionSouris.X < rectangle.X + rectangle.Width) &&
                     (positionSouris.Y > rectangle.Y && positionSouris.Y < rectangle.Y + rectangle.Height));
@@ -76,22 +76,23 @@ namespace Projet3
                 colorFont = Color.Gray;
             }
             else
-                if (isHover)
-                {
-                    sourceRectangle = sourceRectHover;
-                    colorFont = Color.Gray;
-                }
-                else
-                {
-                    sourceRectangle = sourceRectNormal;
-                    colorFont = Color.White;
-                }
+            if (isHover)
+            {
+                sourceRectangle = sourceRectHover;
+                colorFont = Color.Gray;
+            }
+            else
+            {
+                sourceRectangle = sourceRectNormal;
+                colorFont = Color.White;
+            }
 
-            int centrerX = rectangle.X + rectangle.Width / 2 - 25 - (int)(titre.Length * 4.2f);
+            int centrerX = rectangle.X + rectangle.Width / 2 - 5 - (int)(titre.Length * 4.2f);
+            int centrerY = rectangle.Y + rectangle.Height / 2 - 15;
 
             spriteBatch.Draw(texture, rectangle, sourceRectangle, Color.White);
 
-            spriteBatch.DrawString(font, titre, new Vector2(centrerX, rectangle.Y) + new Vector2(20, 5), colorFont);
+            spriteBatch.DrawString(font, titre, new Vector2(centrerX, centrerY), colorFont);
         }
 
 

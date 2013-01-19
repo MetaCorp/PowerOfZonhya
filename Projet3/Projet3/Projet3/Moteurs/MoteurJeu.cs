@@ -34,12 +34,6 @@ namespace Projet3
         Hiver
     }
 
-    enum MonstreType
-    {
-        brasegali,
-        rondoudou
-    }
-
     class MoteurJeu
     {
         #region Déclaration des variables
@@ -139,17 +133,20 @@ namespace Projet3
         {
             combat.Update(gameTime);
 
-            personnage.isAggro = false;
-            personnage.experience += 300;
 
-            for (int i = 0; i < monstres.Count; i++)
-                if (monstres[i].isAggro)
-                {
-                    monstres.RemoveAt(i);
-                    i--;
-                }
+            if (!combat.isActive)
+            {
+                for (int i = 0; i < monstres.Count; i++)
+                    if (monstres[i].isAggro)
+                    {
+                        monstres.RemoveAt(i);
+                        i--;
+                    }
 
-            //statusJeu = Status.EnJeu;
+                carte.SetCarte();
+
+                statusJeu = Status.EnJeu;
+            }
         }
 
         public void UpdateJeu(GameTime gameTime)
@@ -217,14 +214,15 @@ namespace Projet3
             else // en jeu
             {
 
-                foreach (Monstre monstre in monstres)
+                foreach (Monstre monstre in monstres) // aggro des monstres
                     if (monstre.IsAggro(personnage.positionTile))
                     {
-                        if (!personnage.isAggro)
+                        //if (!personnage.isAggro)
                         {
-                            monstre.Aggro();
-                            monstre.Bouger(personnage.positionTile, moteurPhysique);
+                            monstre.Aggro(personnage.positionTile, moteurPhysique);
+                            monstre.Dire("!!!");
                             personnage.Aggro(monstre.positionTile);
+                            personnage.Dire("OH MY GOSH !");
                         }
 
                         if (monstre.positionTile == personnage.positionTile)
