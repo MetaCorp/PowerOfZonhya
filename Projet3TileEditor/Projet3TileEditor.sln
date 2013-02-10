@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projet3TileEditor", "Projet3TileEditor\Projet3TileEditor\Projet3TileEditor.csproj", "{A54DE305-0EAA-456E-ACD9-B497C9176257}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Projet3TileEditorContent", "Projet3TileEditor\Projet3TileEditorContent\Projet3TileEditorContent.contentproj", "{F1E73B3E-0ABE-473D-AFD3-50A35E701B41}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A54DE305-0EAA-456E-ACD9-B497C9176257}.Debug|x86.ActiveCfg = Debug|x86
+		{A54DE305-0EAA-456E-ACD9-B497C9176257}.Debug|x86.Build.0 = Debug|x86
+		{A54DE305-0EAA-456E-ACD9-B497C9176257}.Release|x86.ActiveCfg = Release|x86
+		{A54DE305-0EAA-456E-ACD9-B497C9176257}.Release|x86.Build.0 = Release|x86
+		{F1E73B3E-0ABE-473D-AFD3-50A35E701B41}.Debug|x86.ActiveCfg = Debug|x86
+		{F1E73B3E-0ABE-473D-AFD3-50A35E701B41}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
