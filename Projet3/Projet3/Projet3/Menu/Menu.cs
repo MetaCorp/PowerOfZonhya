@@ -13,6 +13,10 @@ namespace Projet3
 {
     class Menu
     {
+        public Menu menuParent;
+
+        public List<Menu> menuFils = new List<Menu>();
+
         Texture2D texture;
 
         Vector2 position;
@@ -29,6 +33,21 @@ namespace Projet3
         int spacing;
 
         bool vertical;
+
+        public Menu(Menu menuParent, Vector2 position, String[] items, int itemWidth, int itemHeight, int spacing, bool vertical)
+        {
+            isActive = false;
+
+            this.menuParent = menuParent;
+
+            this.position = position;
+            this.itemHeight = itemHeight;
+            this.itemWidth = itemWidth;
+            this.spacing = spacing;
+            this.vertical = vertical;
+
+            InitBoutons(items);
+        }
 
         public Menu(Vector2 position, String[] items, int itemWidth, int itemHeight, int spacing, bool vertical)
         {
@@ -48,6 +67,11 @@ namespace Projet3
             this.texture = texture;
             foreach (Bouton bouton in boutons)
                 bouton.LoadTexture(texture, textureFont);
+        }
+
+        public void AddFils(Menu menuFils)
+        {
+            this.menuFils.Add(menuFils);
         }
 
         public void ChangeTitle(int bouton, string titre)
@@ -73,22 +97,32 @@ namespace Projet3
             boutons[item].isSelected = true;
         }
 
-        public void Activer()
+        public Menu Activer()
         {
+            if (menuParent != null)
+                menuParent.isActive = false;
+
             isActive = true;
+
+            return this;
         }
 
-        public void Desactiver()
+        public Menu Desactiver()
         {
             isActive = false;
+
+            if (menuParent != null)
+                menuParent.Activer();
+
+            return menuParent;
         }
 
-        public int Update(MouseState mouseState)
+        public int Update(EvenementUtilisateur user)
         {
             foreach (Bouton bouton in boutons)
-                bouton.Update(new Vector2(mouseState.X, mouseState.Y));
+                bouton.Update(new Vector2(user.mouseState.X, user.mouseState.Y));
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            if (user.isLeftClicked())
             {
                 int i = 0;
                 while (i < boutons.Count && !boutons[i].isHover)

@@ -75,7 +75,7 @@ namespace Projet3
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin();//SpriteSortMode.BackToFront, null);
             moteurGraphique.Draw(spriteBatch);
             spriteBatch.End();
 

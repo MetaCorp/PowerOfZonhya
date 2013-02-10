@@ -51,7 +51,7 @@ namespace Projet3
 
         public void LoadContent(ContentManager content)
         {
-            textureCarte = content.Load<Texture2D>("Images/Carte/TileSetIso");
+            textureCarte = content.Load<Texture2D>("Images/Carte/isometric_tile");
             textureTileHover = content.Load<Texture2D>("Images/Carte/hilight");
 
             textureBrasegali = content.Load<Texture2D>("Images/CharSet/brasegali");
@@ -83,13 +83,8 @@ namespace Projet3
                     monstre.LoadTexture(textureBrasegali, fontMonstre);
             }
 
-            moteurJeu.menuPausePrincipal.LoadTexture(textureMenu, fontMenu);
-            moteurJeu.menuPauseMeteo.LoadTexture(textureMenu, fontMenu);
-            moteurJeu.menuPauseSaison.LoadTexture(textureMenu, fontMenu);
+            moteurJeu.menuManager.LoadTexture(textureMenu, fontMenu);
 
-            moteurJeu.menuAccueilPrincipal.LoadTexture(textureMenu, fontMenu);
-            moteurJeu.menuAccueilReglage.LoadTexture(textureMenu, fontMenu);
-            moteurJeu.menuAccueilAudio.LoadTexture(textureMenu, fontMenu);
             moteurJeu.menuAccueuilFond.LoadTexture(textureMenuFond);
 
             moteurJeu.hud.LoadTexture(textureMenu, textureBrasegaliVignette, fontHUD);
@@ -155,30 +150,21 @@ namespace Projet3
                     if (!animation.isFinished)
                         animation.Draw(spriteBatch);
 
-                if (moteurJeu.menuPauseMeteo.isActive && moteurJeu.menuPauseSaison.isActive)
-                {
-                    moteurJeu.menuPauseMeteo.Draw(spriteBatch);
-                    moteurJeu.menuPauseSaison.Draw(spriteBatch);
-                }
-                else if (moteurJeu.menuPausePrincipal.isActive)
-                    moteurJeu.menuPausePrincipal.Draw(spriteBatch);
+                if (moteurJeu.menuManager.IsMenuJeuActif())
+                    moteurJeu.menuManager.Draw(spriteBatch);
             }
             else if (moteurJeu.statusJeu == Status.MenuAccueil)
             {
                 moteurJeu.menuAccueuilFond.Draw(spriteBatch);
 
-                if (moteurJeu.menuAccueilPrincipal.isActive)
-                    moteurJeu.menuAccueilPrincipal.Draw(spriteBatch);
-                else if (moteurJeu.menuAccueilReglage.isActive)
-                    moteurJeu.menuAccueilReglage.Draw(spriteBatch);
-                else if (moteurJeu.menuAccueilAudio.isActive)
-                    moteurJeu.menuAccueilAudio.Draw(spriteBatch);
+                moteurJeu.menuManager.Draw(spriteBatch);
             }
             else if (moteurJeu.statusJeu == Status.EnCombat)
             {
                 moteurJeu.combat.Draw(spriteBatch);
-
             }
+            else
+                moteurJeu.menuManager.Draw(spriteBatch);
         }
 
         public void UpdateParticule()
@@ -202,7 +188,7 @@ namespace Projet3
                     moteurParticuleMenuSouris.Totale = 1;
                 }
             }
-            else if (moteurJeu.statusJeu == Status.EnJeu && !moteurJeu.menuPausePrincipal.isActive)
+            else if (moteurJeu.statusJeu == Status.EnJeu && !moteurJeu.menuManager.IsMenuJeuActif())
             {
                 if (moteurJeu.meteo == Meteo.Pluie)
                     moteurParticulePluie.Update();

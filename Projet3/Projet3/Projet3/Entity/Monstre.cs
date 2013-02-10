@@ -28,6 +28,8 @@ namespace Projet3
         public Vector2 positionTileCombat;
         public Vector2 positionTileCarte;
 
+        public int hauteur;
+
         Vector2 deplacement;
         int direction;
         float vitesse;
@@ -52,12 +54,18 @@ namespace Projet3
 
         float timeToWait;
 
-        public Monstre(MonstreType type, Vector2 position)
+        int[,] carte;
+
+        public Monstre(MonstreType type, Vector2 position, int[,] carte)
         {
+            this.carte = carte;
+
             this.type = type;
 
             positionTileCarte = position;
             positionTile = positionTileCarte;
+
+            hauteur = 1;
 
             vitesse = 0.05f;
 
@@ -112,6 +120,8 @@ namespace Projet3
 
         public void Update(GameTime gameTime, Vector2 camera, MoteurPhysique moteurPhysique)
         {
+            hauteur = carte[(int)positionTile.X, (int)positionTile.Y];
+
             if (isCombat)
                 positionTile = positionTileCombat;
             else
@@ -130,8 +140,6 @@ namespace Projet3
                 timeElapsedMessage = 0;
                 message = "";
             }
-
-
 
             if (timeElapsedMove > timeToMove)
             {
@@ -172,7 +180,7 @@ namespace Projet3
             positionTile.Y = (float)Math.Round(positionTile.Y, 2, MidpointRounding.ToEven);
 
             spriteAnime.IsAnimate(isMoving);
-            spriteAnime.Update(gameTime, Constante.ConvertToIso(positionTile) + new Vector2(16, 20) + camera);
+            spriteAnime.Update(gameTime, Constante.ConvertToIso(positionTile) + new Vector2(16, 20 - (hauteur - 1) * 12) + camera);
 
             if (isCombat)
                 positionTileCombat = positionTile;
@@ -191,7 +199,7 @@ namespace Projet3
         {
             if (path.Count == 0)
             {
-                int radius = 3;
+                int radius = 1;
 
                 Vector2 nextPosition;
 
@@ -323,7 +331,7 @@ namespace Projet3
 
             if (message != "")
             {
-                spriteBatch.DrawString(font, message, Constante.ConvertToIso(positionTile) + camera + new Vector2(23, 10), Color.Black);
+                spriteBatch.DrawString(font, message, Constante.ConvertToIso(positionTile) + camera + new Vector2(23, 10 - (hauteur - 1) * 12), Color.Black);
                 //reste a afficher la bulle
             }
         }

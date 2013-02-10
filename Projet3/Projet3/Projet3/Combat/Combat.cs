@@ -72,19 +72,22 @@ namespace Projet3
 
             isActive = true;
 
-            string[,] stringCarte = GenererCarte();
+            List<string>[,] stringCarte = GenererCarte();
 
             carte = new Carte(moteurPhysique, stringCarte, camera, 64, 64, 32, 16);
             carte.LoadTexture(textureCarte, textureTileHover);
         }
 
-        private string[,] GenererCarte()
+        private List<string>[,] GenererCarte()
         {
-            string[,] stringCarte = new string[15, 15];
+            List<string>[,] stringCarte = new List<string>[15, 15];
 
             for (int x = 0; x < 15; x++)
                 for (int y = 0; y < 15; y++)
-                    stringCarte[y, x] = "c/";
+                {
+                    stringCarte[y, x] = new List<string>();
+                    stringCarte[y, x].Add("a00");
+                }
 
             return stringCarte;
         }
@@ -106,7 +109,7 @@ namespace Projet3
             carte.Update(gameTime, camera, evenementUtilisateur.mouseState);
             joueur.Update(gameTime, camera);
             ennemi.Update(gameTime, camera, moteurPhysique);
-            hud.Update(evenementUtilisateur.mouseState);
+            hud.Update(evenementUtilisateur);
         }
 
         public void Draw(SpriteBatch spriteBatch)

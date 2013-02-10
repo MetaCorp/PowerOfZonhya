@@ -13,32 +13,34 @@ namespace Projet3
 {
     class MoteurSysteme
     {
-        public string[,] carteArray;
+        public List<string>[,] carteArray;
 
         System.IO.StreamReader lireCarte;
 
+        System.IO.StreamWriter ecrireCarte;
+
         public MoteurSysteme()
         {
-            InitCarteArray(Environment.CurrentDirectory + @"\carte1.txt");
+            InitCarte(Environment.CurrentDirectory + @"\carte1.txt");
 
             LireCarte(Environment.CurrentDirectory + @"\carte1.txt");
-            LireCarte(Environment.CurrentDirectory + @"\carte2.txt");
+
         }
 
-        private void InitCarteArray(String asset)
+        public void InitCarte(String asset)
         {
             lireCarte = new System.IO.StreamReader(asset);
 
-            carteArray = new string[Convert.ToInt32(lireCarte.ReadLine()), Convert.ToInt32(lireCarte.ReadLine())];
+            carteArray = new List<string>[Convert.ToInt32(lireCarte.ReadLine()), Convert.ToInt32(lireCarte.ReadLine())];
 
             for (int x = 0; x < carteArray.GetLength(0); x++)
                 for (int y = 0; y < carteArray.GetLength(1); y++)
-                    carteArray[y, x] = "";
+                    carteArray[y, x] = new List<string>();
 
             lireCarte.Close();
         }
 
-        private void LireCarte(String asset)
+        public void LireCarte(String asset)
         {
             lireCarte = new System.IO.StreamReader(asset);
 
@@ -49,22 +51,15 @@ namespace Projet3
             {
                 for (int x = 0; x < width; x++)
                 {
-                    char c = (Char)lireCarte.Read();
-                    
-                    if (c != ' ')
-                        carteArray[y, x] += c;
+                    string str = lireCarte.ReadLine();
 
-                    if (x == (width - 1) && y != (height - 1)) // passe le char de retour à la ligne
-                    {
-                        lireCarte.Read();
-                        lireCarte.Read();
-                    }
+                    for (int i = 0; i < str.Length; i += 3)
+                        carteArray[y, x].Add(str.Substring(i, 3));
                 }
 
             }
 
             lireCarte.Close();
         }
-
     }
 }

@@ -37,11 +37,11 @@ namespace Projet3
             boutonLoot.LoadTexture(textureFin, font);
         }
 
-        public void Update(MouseState mouseState)
+        public void Update(EvenementUtilisateur user)
         {
             if (boutonLancerCombat.isActive)
             {
-                int action = boutonLancerCombat.Update(mouseState);
+                int action = boutonLancerCombat.Update(user);
 
                 if (action == 0)
                 {
@@ -51,7 +51,7 @@ namespace Projet3
             }
 
             if (combat.phase == PhaseCombat.Fin)
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                if (user.mouseState.LeftButton == ButtonState.Pressed)
                 {
                     combat.joueur.FinCombat(300);
                     combat.isActive = false;

@@ -114,6 +114,7 @@
     <Compile Include="EvenementUtilisateur.cs" />
     <Compile Include="Carte\HUD.cs" />
     <Compile Include="Combat\HudCombat.cs" />
+    <Compile Include="Menu\MenuManager.cs" />
     <Compile Include="Menu\Bouton.cs" />
     <Compile Include="Carte\Carte.cs" />
     <Compile Include="Constante.cs" />

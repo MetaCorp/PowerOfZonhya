@@ -42,13 +42,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Images\Carte\TileSetIso.png">
-      <Name>TileSetIso</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Images\CharSet\brasegali.png">
       <Name>brasegali</Name>
       <Importer>TextureImporter</Importer>
@@ -187,6 +180,13 @@
   <ItemGroup>
     <Compile Include="Bouton1.png">
       <Name>Bouton1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Images\Carte\isometric_tile.png">
+      <Name>isometric_tile</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -21,22 +21,18 @@ namespace Projet3
 
         }
 
-        public void SetCarte(List<Tuile> carte, int width, int height)
+        public void SetCarte(List<Tuile>[,] carte)
         {
-            collisionCarte = new int[width, height];
+            collisionCarte = new int[carte.GetLength(0), carte.GetLength(1)];
 
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                    collisionCarte[y, x] = 0;
-
-            foreach (Tuile tuile in carte)
-                if (tuile.isCollision)
-                    collisionCarte[(int)tuile.position.X, (int)tuile.position.Y] = 1;
+            for (int x = 0; x < collisionCarte.GetLength(0); x++)
+                for (int y = 0; y < collisionCarte.GetLength(1); y++)
+                    collisionCarte[y, x] = carte[y, x].Count;
         }
 
-        public bool isCollision(Vector2 position)
+        public bool isCollision(Vector2 position, Vector2 posInit)
         {
-            if (collisionCarte[(int)position.X, (int)position.Y] == 1)
+            if (Math.Abs(collisionCarte[(int)position.X, (int)position.Y] - collisionCarte[(int)posInit.X, (int)posInit.Y]) > 1)
                 return true;
             else
                 return false;
@@ -44,8 +40,6 @@ namespace Projet3
 
         public List<Vector2> GetPath(Vector2 positionDepart, Vector2 positionFinale)
         {
-            Console.WriteLine(collisionCarte.Length);
-
             positionFinale.X = (int)positionFinale.X;
             positionFinale.Y = (int)positionFinale.Y;
 
@@ -58,7 +52,7 @@ namespace Projet3
 
             closedList.Add(positionDepart);
 
-            if (collisionCarte[(int)positionFinale.X, (int)positionFinale.Y] == 0)
+            //if (collisionCarte[(int)positionFinale.X, (int)positionFinale.Y] == 0)
                 while (closedList[closedList.Count - 1] != positionFinale && !cheminImpossible)
                 {
                     openList = RemplirOpenList(currentPosition, closedList);
@@ -96,27 +90,27 @@ namespace Projet3
 
             for (int i = 0; i < 8; i++)
             {
-                if (i == 0)
+                if (i == 0 && position.X - 1 < collisionCarte.GetLength(0))
                     posTest = new Vector2(position.X + 1, position.Y);
-                else if (i == 1)
+                else if (i == 1 && position.X + 1 < collisionCarte.GetLength(0) && position.Y + 1 < collisionCarte.GetLength(1))
                     posTest = new Vector2(position.X + 1, position.Y + 1);
-                else if (i == 2)
+                else if (i == 2 && position.Y + 1 < collisionCarte.GetLength(1))
                     posTest = new Vector2(position.X, position.Y + 1);
-                else if (i == 3)
+                else if (i == 3 && position.X - 1 > 0 && position.Y + 1 < collisionCarte.GetLength(1))
                     posTest = new Vector2(position.X - 1, position.Y + 1);
-                else if (i == 4)
+                else if (i == 4 && position.X - 1 > 0)
                     posTest = new Vector2(position.X - 1, position.Y);
-                else if (i == 5)
+                else if (i == 5 && position.X - 1 > 0 && position.Y - 1 > 0)
                     posTest = new Vector2(position.X - 1, position.Y - 1);
-                else if (i == 6)
+                else if (i == 6 && position.Y - 1 > 0)
                     posTest = new Vector2(position.X, position.Y - 1);
-                else if (i == 7)
+                else if (i == 7 && position.Y - 1 > 0 && position.X + 1 < collisionCarte.GetLength(0))
                     posTest = new Vector2(position.X + 1, position.Y - 1);
                 else
                     posTest = new Vector2(position.X, position.Y);
 
 
-                if (posTest.X > 0 && posTest.Y > 0 && collisionCarte[(int)posTest.X, (int)posTest.Y] == 0 && !isVectorInList(posTest, closedList))
+                if (posTest.X > 0 && posTest.Y > 0 && !isCollision(posTest, position) && !isVectorInList(posTest, closedList))
                     openList.Add(posTest);
             }
 

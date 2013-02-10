@@ -14,9 +14,11 @@ namespace Projet3
     enum Status
     {
         MenuAccueil,
+        EnPause,
         EnJeu,
         EnCombat,
-        Quitter
+        Quitter,
+        Test
     }
 
     enum Meteo
@@ -44,14 +46,9 @@ namespace Projet3
 
         public Combat combat;
 
-        public Menu menuAccueilPrincipal;
-        public Menu menuAccueilReglage;
-        public Menu menuAccueilAudio;
-        public Sprite menuAccueuilFond;
+        public MenuManager menuManager;
 
-        public Menu menuPausePrincipal;
-        public Menu menuPauseMeteo;
-        public Menu menuPauseSaison;
+        public Sprite menuAccueuilFond;
 
         public Status statusJeu;
 
@@ -75,40 +72,22 @@ namespace Projet3
 
             meteo = Meteo.Neige;
 
+            menuManager = new MenuManager(this);
+
             this.moteurPhysique = moteurPhysique;
             this.moteurSysteme = moteurSysteme;
 
             evenementUtilisateur = new EvenementUtilisateur();
-
-            #region MenuAccueil
-            menuAccueilPrincipal = new Menu(new Vector2(Constante.WindowWidth / 2 - 100 - 200 - 50, Constante.WindowHeight - 100), 
-                                   new string[3] { "Reglages", "Nouvelle Partie", "Quitter" }, 200, 40, 250, false);
-
-            menuAccueilPrincipal.Activer();
-
-            menuAccueilReglage = new Menu(new Vector2(Constante.WindowWidth / 2 - 100, Constante.WindowHeight / 2 - 120),
-                                 new string[4] { "Video", "Audio", "Raccourcis", "Retour" }, 200, 40, 60, true);
-
-            menuAccueilAudio = new Menu(new Vector2(Constante.WindowWidth / 2 - 100, Constante.WindowHeight / 2 - 60 - 30),
-                                 new string[3] { "Musique : ", "Son : ", "Retour" }, 200, 40, 60, true);
-
+            
             menuAccueuilFond = new Sprite(new Rectangle(0, 0, Constante.WindowWidth, Constante.WindowHeight));
-            #endregion
-
-            menuPausePrincipal = new Menu(new Vector2(Constante.WindowWidth / 2 - 100, Constante.WindowHeight / 2 - 120),
-                                 new string[4] { "Reprendre", "Reglage", "Meteo - Saison", "Quitter" }, 200, 40, 60, true);
-
-            menuPauseMeteo = new Menu(new Vector2(Constante.WindowWidth / 2 - 100 + 100, Constante.WindowHeight / 2 - 40 * 2),
-                                 new string[4] { "Soleil", "Pluie", "Neige", "retour"}, 200, 40, 40, true);
-
-            menuPauseSaison = new Menu(new Vector2(Constante.WindowWidth / 2 - 100 - 100, Constante.WindowHeight / 2 - 40 * 2),
-                                 new string[4] { "Printemps", "Ete", "Automne", "Hiver" }, 200, 40, 40, true);
-
 
             carte = new Carte(moteurPhysique, moteurSysteme.carteArray, Vector2.Zero, 64, 64, 32, 16);
-            personnage = new Personnage("Meta", new Vector2(10, 5));
-            monstres.Add(new Monstre(MonstreType.rondoudou, new Vector2(14, 8)));
-            monstres.Add(new Monstre(MonstreType.brasegali, new Vector2(20, 20)));
+            
+            carte.SetCarte();
+
+            personnage = new Personnage("Meta", new Vector2(3, 3), moteurPhysique.collisionCarte);
+            monstres.Add(new Monstre(MonstreType.rondoudou, new Vector2(10, 8), moteurPhysique.collisionCarte));
+            //monstres.Add(new Monstre(MonstreType.brasegali, new Vector2(3, 5), moteurPhysique.collisionCarte));
 
             hud = new HUD(personnage);
 
@@ -126,13 +105,14 @@ namespace Projet3
             else if (statusJeu == Status.EnCombat)
                 UpdateCombat(gameTime);
             else if (statusJeu == Status.MenuAccueil)
-                UpdateMenu();
+                menuManager.UpdateMenuAccueil(evenementUtilisateur);
+            else
+                menuManager.UpdateMenuJeu(evenementUtilisateur);
         }
 
         public void UpdateCombat(GameTime gameTime)
         {
             combat.Update(gameTime);
-
 
             if (!combat.isActive)
             {
@@ -153,68 +133,14 @@ namespace Projet3
         {
             if (evenementUtilisateur.IsKeyUsed(Keys.Escape))
             {
-                if (menuPausePrincipal.isActive)
-                {
-                    menuPausePrincipal.Desactiver();
-                    menuPauseMeteo.Desactiver();
-                }
-                else
-                    menuPausePrincipal.Activer();
+                menuManager.isMenuJeuActif = !menuManager.isMenuJeuActif;
             }
 
-            if (menuPauseMeteo.isActive && menuPauseSaison.isActive) // Menu Saison et météo
+            if (menuManager.IsMenuJeuActif())
+                menuManager.UpdateMenuJeu(evenementUtilisateur);
+            else
             {
-                int action1 = menuPauseMeteo.Update(evenementUtilisateur.mouseState);
-
-                if (action1 == 0)
-                    meteo = Meteo.Soleil;
-                else if (action1 == 1)
-                    meteo = Meteo.Pluie;
-                else if (action1 == 2)
-                    meteo = Meteo.Neige;
-                else if (action1 == 3)
-                {
-                    menuPauseMeteo.Desactiver();
-                    menuPauseSaison.Desactiver();
-                }
-
-                menuPauseMeteo.SetSelectedItem((int)meteo);
-
-                int action2 = menuPauseSaison.Update(evenementUtilisateur.mouseState);
-
-                if (action2 == 0)
-                    saison = Saison.Printemps;
-                else if (action2 == 1)
-                    saison = Saison.Ete;
-                else if (action2 == 2)
-                    saison = Saison.Automne;
-                else if (action2 == 3)
-                    saison = Saison.Hiver;
-
-                menuPauseSaison.SetSelectedItem((int)saison);
-
-            }
-            else if (menuPausePrincipal.isActive) // Menu Pause
-            {
-                int action = menuPausePrincipal.Update(evenementUtilisateur.mouseState);
-
-                if (action == 0)
-                    menuPausePrincipal.Desactiver();
-                else if (action == 2)
-                {
-                    menuPauseMeteo.Activer();
-                    menuPauseSaison.Activer();
-                }
-                else if (action == 3)
-                {
-                    menuPausePrincipal.Desactiver();
-                    statusJeu = Status.MenuAccueil;
-                }
-            }
-            else // en jeu
-            {
-
-                foreach (Monstre monstre in monstres) // aggro des monstres
+                /*foreach (Monstre monstre in monstres) // aggro des monstres
                     if (monstre.IsAggro(personnage.positionTile))
                     {
                         //if (!personnage.isAggro)
@@ -238,7 +164,8 @@ namespace Projet3
                                 statusJeu = Status.EnCombat;
                             }
                         }
-                    }
+                    }*/
+
 
 
                 if (evenementUtilisateur.mouseState.RightButton == ButtonState.Pressed)
@@ -247,8 +174,8 @@ namespace Projet3
                 carte.Update(gameTime, camera, evenementUtilisateur.mouseState);
                 personnage.Update(gameTime, camera);
 
-                foreach (Monstre monstre in monstres)
-                    monstre.Update(gameTime, camera, moteurPhysique);
+                foreach (Monstre monstre2 in monstres)
+                    monstre2.Update(gameTime, camera, moteurPhysique);
 
                 hud.Update();
 
@@ -258,60 +185,7 @@ namespace Projet3
                     if (!animation.isFinished)
                         animation.Update();
             }
-        }
-
-        public void UpdateMenu()
-        {
-            if (menuAccueilPrincipal.isActive)
-            {
-                int action = menuAccueilPrincipal.Update(evenementUtilisateur.mouseState);
-
-                if (action == 0)
-                {
-                    menuAccueilPrincipal.Desactiver();
-                    menuAccueilReglage.Activer();
-                }
-                else if (action == 1)
-                    statusJeu = Status.EnJeu;
-                else if (action == 2)
-                    statusJeu = Status.Quitter;
-            }
-            else if (menuAccueilReglage.isActive)
-            {
-                int action = menuAccueilReglage.Update(evenementUtilisateur.mouseState);
-
-                if (action == 3)
-                {
-                    menuAccueilReglage.Desactiver();
-                    menuAccueilPrincipal.Activer();
-                }
-                else if (action == 1)
-                {
-                    menuAccueilReglage.Desactiver();
-                    menuAccueilAudio.Activer();
-                }
-            }
-            else if (menuAccueilAudio.isActive)
-            {
-                int action = menuAccueilAudio.Update(evenementUtilisateur.mouseState);
-
-                menuAccueilAudio.ChangeTitle(0, "Musique : " + MoteurAudio.songVolume);
-                menuAccueilAudio.ChangeTitle(1, "Son : " + MoteurAudio.soundVolume);
-
-                if (action == 0)
-                {
-                    MoteurAudio.songVolume = (MoteurAudio.songVolume + 1) % 101;
-                }
-                else if (action == 1)
-                {
-                    MoteurAudio.soundVolume = (MoteurAudio.soundVolume + 1) % 101;
-                }
-                else if (action == 2)
-                {
-                    menuAccueilAudio.Desactiver();
-                    menuAccueilReglage.Activer();
-                }
-            }
+                
         }
 
         public void UpdateCamera()

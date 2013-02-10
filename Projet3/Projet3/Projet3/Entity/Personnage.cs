@@ -32,6 +32,8 @@ namespace Projet3
         public Vector2 positionTileCarte;
         public Vector2 positionTileCombat;
 
+        public int hauteur;
+
         bool revert;// flip
         bool isMoving;
         bool isCombat;
@@ -47,13 +49,19 @@ namespace Projet3
         public int mana, manaMax;
         public int experience, experienceMax;
 
-        public Personnage(String nom, Vector2 position)
+        int[,] carte;
+
+        public Personnage(String nom, Vector2 position, int[,] carte)
         {
             this.nom = nom;
             positionTileCarte = position;
             positionTile = positionTileCarte;
             vitesse = 0.05f;
             isAggro = false;
+
+            this.carte = carte;
+
+            hauteur = 7;
 
             timeToSay = 3;
 
@@ -107,6 +115,8 @@ namespace Projet3
 
         public void Update(GameTime gameTime, Vector2 camera)
         {
+            hauteur = carte[(int)positionTile.X, (int)positionTile.Y];
+
             if (isCombat)
                 positionTile = positionTileCombat;
             else
@@ -154,7 +164,7 @@ namespace Projet3
             positionTile.Y = (float)Math.Round(positionTile.Y, 2, MidpointRounding.ToEven);
 
             spriteAnime.IsAnimate(isMoving);
-            spriteAnime.Update(gameTime, Constante.ConvertToIso(positionTile) + new Vector2(16, 20) + camera);
+            spriteAnime.Update(gameTime, Constante.ConvertToIso(positionTile) + new Vector2(16, 20 - (hauteur - 1) * 12) + camera);
 
             if (isCombat)
                 positionTileCombat = positionTile;
@@ -276,11 +286,11 @@ namespace Projet3
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteAnime.Draw(spriteBatch, revert);
-            spriteBatch.DrawString(font, nom, Constante.ConvertToIso(positionTile) + camera + new Vector2(14, 0), Color.White);
+            spriteBatch.DrawString(font, nom, Constante.ConvertToIso(positionTile) + camera + new Vector2(14, - (hauteur - 1) * 12), Color.White);
 
             if (message != "")
             {
-                spriteBatch.DrawString(font, message, Constante.ConvertToIso(positionTile) + camera + new Vector2(0, -15), Color.Black);
+                spriteBatch.DrawString(font, message, Constante.ConvertToIso(positionTile) + camera + new Vector2(0, -15 - (hauteur - 1) * 12), Color.Black);
                 //reste a afficher la bulle
             }
         }
